@@ -30,6 +30,14 @@ if sys.version_info >= (3,):
 if reloader in sys.modules:
     sys.modules[reloader].reload_modules()
 
+IS_PY2 = sys.version_info[0] == 2
+
+def getStatMode(path):
+    if IS_PY2:
+        return os.stat( path ).st_mode
+    else:
+        return os.stat( path )[stat.ST_MODE]
+
 try: # Python 3
 
     # Import the features module, including the haxelib and key commands etc
@@ -1972,15 +1980,15 @@ class HaxeComplete( sublime_plugin.EventListener ):
 
         if os.path.exists( fn ):
             if os.path.exists( temp ):
-                if os.stat( temp ).st_mode & stat.S_IWRITE == 0:
-                    os.chmod( temp , os.stat( temp ).st_mode | stat.S_IWRITE )
+                if getStatMode(temp) & stat.S_IWRITE == 0:
+                    os.chmod( temp , getStatMode(temp) | stat.S_IWRITE )
                 shutil.copy2( temp , fn )
                 os.remove( temp )
             # copy saved file to temp for future restoring
             shutil.copy2( fn , temp )
 
-            if os.stat( fn ).st_mode & stat.S_IWRITE == 0:
-                os.chmod( fn , os.stat( fn ).st_mode | stat.S_IWRITE )
+            if getStatMode(fn) & stat.S_IWRITE == 0:
+                os.chmod( fn , getStatMode(fn) | stat.S_IWRITE )
         # write current source to file
         f = codecs.open( fn , "wb" , "utf-8" , "ignore" )
         f.write( src )
@@ -1995,8 +2003,8 @@ class HaxeComplete( sublime_plugin.EventListener ):
         fn = view.file_name()
 
         if os.path.exists( temp ) :
-            if os.stat( temp ).st_mode & stat.S_IWRITE == 0:
-                os.chmod( temp , os.stat( temp ).st_mode | stat.S_IWRITE )
+            if os.stat( temp )[stat.ST_MODE] & stat.S_IWRITE == 0:
+                os.chmod( temp , os.stat( temp )[stat.ST_MODE] | stat.S_IWRITE )
 
             shutil.copy2( temp , fn )
             # os.chmod( temp, stat.S_IWRITE )
