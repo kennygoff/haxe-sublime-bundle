@@ -4,6 +4,8 @@ import sys
 #sys.path.append("/usr/lib/python2.6/")
 #sys.path.append("/usr/lib/python2.6/lib-dynload")
 
+from xml.sax.saxutils import escape
+
 import sublime, sublime_plugin
 import subprocess, time
 import tempfile
@@ -1781,7 +1783,7 @@ class HaxeComplete( sublime_plugin.EventListener ):
         mode = display["mode"]
 
         if int(sublime.version()) >= 3000 :
-            x = "<root>"+err+"</root>"
+            x = "<root>"+escape(err)+"</root>"
         else :
             x = "<root>"+err.encode("ASCII",'ignore')+"</root>"
 
@@ -2003,8 +2005,8 @@ class HaxeComplete( sublime_plugin.EventListener ):
         fn = view.file_name()
 
         if os.path.exists( temp ) :
-            if os.stat( temp )[stat.ST_MODE] & stat.S_IWRITE == 0:
-                os.chmod( temp , os.stat( temp )[stat.ST_MODE] | stat.S_IWRITE )
+            if getStatMode(temp) & stat.S_IWRITE == 0:
+                os.chmod( temp , getStatMode(temp) | stat.S_IWRITE )
 
             shutil.copy2( temp , fn )
             # os.chmod( temp, stat.S_IWRITE )
