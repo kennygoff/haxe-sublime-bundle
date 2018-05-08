@@ -2133,11 +2133,12 @@ class HaxeComplete( sublime_plugin.EventListener ):
             hints = []
             haxeComps = []
 
-            if not self.type_completion_only:
-                temp = self.save_temp_file( view )
-                byte_offset = len(codecs.encode(src[0:offset], "utf-8"))
-                ret , haxeComps , status , hints , _ = self.run_haxe( view , { "filename" : fn , "offset" : byte_offset , "commas" : commas , "mode" : mode })
-                self.clear_temp_file( view , temp )
+            # TODO: Causing errors on macOS, might not be able to access filesystem here
+            # if not self.type_completion_only:
+            #     temp = self.save_temp_file( view )
+            #     byte_offset = len(codecs.encode(src[0:offset], "utf-8"))
+            #     ret , haxeComps , status , hints , _ = self.run_haxe( view , { "filename" : fn , "offset" : byte_offset , "commas" : commas , "mode" : mode })
+            #     self.clear_temp_file( view , temp )
 
             if (toplevelComplete and len(haxeComps) == 0 or
                     self.type_completion_only):
